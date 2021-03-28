@@ -6,7 +6,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 
-app.listen(7777, () => console.log("Server started at port 7777"))
+app.listen(3000, () => console.log("Server started at port 3000"))
 app.use(express.static('public'));
 
 
