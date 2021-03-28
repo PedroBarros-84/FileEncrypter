@@ -1,4 +1,3 @@
-
 const express = require('express');
 const app = express();
 const multer  = require('multer');
@@ -16,20 +15,16 @@ app.post('/', upload.single('uploadedFile'), async (request, response) => {
     console.log(request.body);
     console.log(request.file);
     
-    /* await processFile(request.file.path); */
-    await processFile(request.body, request.file);
+    try { await processFile(request.body, request.file); }
+    catch (err) { console.log(err) }
 
     console.log("sending file to client");
 
-    try {
-        response.download(request.file.path, ("after_" + request.file.originalname), () => {
+    try { response.download(request.file.path, ("after_" + request.file.originalname), () => {
             console.log("starting delete");
-            fs.promises.unlink(request.file.path);  });
-    } catch (err) {
-        console.log("catched error");
-        console.log(err);
-    };
-        
+            fs.promises.unlink(request.file.path);  }); }
+    catch (err) { console.log(err); }
+    
 });
 
 
@@ -42,17 +37,12 @@ async function processFile(body, file) {
     // Uint8Array defines array to be of type primitive unsigned 8bit
     var fileAsArray = Uint8Array.from(fs.readFileSync(file.path));
 
-    console.log(body.password);
+    // SHA-512 creates a key of 128bytes
+    const key = Array.from(crypto.createHash('sha512').update(body.password).digest('hex'));
+    console.log(key.length);
 
-    console.log((crypto.createHash('sha256').update("foobar").digest('base64')));
-
-    // second argument of writefile can receive Buffer, TypedArray or DataView
-    await fs.promises.writeFile(file.path, fileAsArray, (err) => {
-        if (err) {
-            console.log("process file error");
-            console.log(err);
-        };
-    });
+    // second argument of writefile can receive TypedArray
+    await fs.promises.writeFile(file.path, fileAsArray);
 
 };
 
