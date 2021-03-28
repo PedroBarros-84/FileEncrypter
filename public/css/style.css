@@ -1,0 +1,60 @@
+* {
+    /* outline: 1px solid magenta; */
+}
+
+body {
+    /* background-color: rgb(177, 177, 177); */
+    background-color: ghostwhite;
+    height: 100vh;
+    width: 100vw;
+    font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+    display: flex;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    margin: 1em;
+}
+
+.container {
+    /* background-color:gainsboro;
+    border-radius: 15px; */
+    max-width: 750px;
+    width: 80%;
+
+    border-radius: 37px;
+    background: #ebebeb;
+    box-shadow:  32px 32px 64px #b1b1b1,
+                -32px -32px 64px #ffffff;
+}
+
+.form-group {
+    margin: 1em;
+    text-align: center;
+    margin: 1em auto;
+}
+
+.container ul {
+    width: 90%;
+}
+
+.container .password {
+    display: flex;
+}
+
+.container .buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container .radio-button {
+    margin-left: 0;
+    width: 49.5%;
+}
+
+.container .process-button {
+    width: 100%;
+    margin-bottom: 5%;
+}
+

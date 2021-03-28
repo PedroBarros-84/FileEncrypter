@@ -1,0 +1,21 @@
+{
+  "name": "encrypter",
+  "version": "1.0.0",
+  "description": "File encrypter app, by Pedro Barros",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "file",
+    "encryption"
+  ],
+  "author": "Pedro Barros",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.7"
+  }
+}
