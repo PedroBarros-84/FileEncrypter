@@ -40,4 +40,5 @@ Temporary Items
 
 
 # Ignore uploads directory
-uploads/
+/uploads
+/node_modules
