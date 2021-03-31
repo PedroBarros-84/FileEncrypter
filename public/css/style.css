@@ -3,8 +3,7 @@
 }
 
 body {
-    /* background-color: rgb(177, 177, 177); */
-    background-color: ghostwhite;
+    background-color: rgb(235, 235, 235);
     height: 100vh;
     width: 100vw;
     font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
@@ -15,24 +14,30 @@ body {
 h1 {
     text-align: center;
     margin: 1em;
+    font-family: 'Overpass', sans-serif;
+    font-weight: 700;
+    text-shadow: 2px 2px #cbcbcb;
+    letter-spacing: 0.2em;
 }
 
 .container {
-    /* background-color:gainsboro;
-    border-radius: 15px; */
     max-width: 750px;
+    padding: 20px;
     width: 80%;
+    border-radius: 50px;
+    background: linear-gradient(145deg, #fbfbfb, #d4d4d4);
+    box-shadow:  50px  50px 100px #a5a5a5,
+                -50px -50px 100px #ffffff;
+}
 
-    border-radius: 37px;
-    background: #ebebeb;
-    box-shadow:  32px 32px 64px #b1b1b1,
-                -32px -32px 64px #ffffff;
+.container .fileselector {
+    box-shadow: 9px  9px 20px #a5a5a5,
+               -9px -9px 20px #ffffff;
 }
 
 .form-group {
-    margin: 1em;
     text-align: center;
-    margin: 1em auto;
+    margin: 1.5em auto;
 }
 
 .container ul {
@@ -41,6 +46,9 @@ h1 {
 
 .container .password {
     display: flex;
+    border-radius: 5px;
+    box-shadow: 9px  9px 20px #a5a5a5,
+               -9px -9px 20px #ffffff;
 }
 
 .container .buttons {
@@ -50,11 +58,17 @@ h1 {
 
 .container .radio-button {
     margin-left: 0;
-    width: 49.5%;
+    width: 48%;
+    box-shadow: 9px  9px 20px #a5a5a5,
+               -9px -9px 20px #ffffff;
 }
 
 .container .process-button {
     width: 100%;
+    border: 1px solid rgb(198, 152, 1);
     margin-bottom: 5%;
+    box-shadow: 9px  9px 20px #a5a5a5,
+               -9px -9px 20px #ffffff;
 }
 
+/* query viewport size for smartphone */
