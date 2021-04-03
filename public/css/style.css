@@ -3,7 +3,7 @@
 }
 
 body {
-    background-color: rgb(235, 235, 235);
+    background-color: rgb(225, 225, 225);
     height: 100vh;
     width: 100vw;
     font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
@@ -63,12 +63,30 @@ h1 {
                -9px -9px 20px #ffffff;
 }
 
+.container .radio-button:hover {
+    background-color: #a2a9b0;
+}
+
+.container .radio-button:active {
+    box-shadow: 9px  9px 20px #939393,
+                -9px -9px 20px #ffffff;
+    /* transform: translateY(1px); */
+    /* width: 47.9%; */
+}
+
 .container .process-button {
     width: 100%;
     border: 1px solid rgb(198, 152, 1);
     margin-bottom: 5%;
     box-shadow: 9px  9px 20px #a5a5a5,
                -9px -9px 20px #ffffff;
+}
+
+.container .process-button:active {
+    box-shadow: 9px  9px 20px #939393,
+                -9px -9px 20px #ffffff;
+    transform: translateY(1px);
+    width: 99%;
 }
 
 /* query viewport size for smartphone */

@@ -1,25 +1,44 @@
 // Heroku server requires environment variable "process.env.PORT" to run on their server
 const PORT = process.env.PORT || 3000;
+const uploadedFilesDir = 'uploads/';
 
 // imports && dependencies
 const express = require('express');
 const app = express();
 const multer  = require('multer');
-const upload = multer({ dest: 'uploads/'});
+const multerDest = multer({ dest: uploadedFilesDir});
 const fs = require('fs');
 const crypto = require('crypto');
+const alert = require('alert');
 
+// bound socket to port
 app.listen(PORT);
-console.log("Server started at port 3000");
+console.log("Server started at port " + PORT);
+
+// declare root directory for static files
 app.use(express.static('public'));
 
 
-app.post('/', upload.single('uploadedFile'), async (request, response) => {
+app.post('/', multerDest.single('uploadedFile'), async (request, response) => {
 
-    /* console.log(request.body);
-    console.log(request.file); */
+    console.log("request.body:", request.body);
+    console.log("request.file:", request.file);
 
-    const data = {
+    // when user doesn't provide password or file
+    if (!request.body.password || !request.file) {
+        alert("You have to provide both file and password.");
+        response.redirect('..');
+        return;
+    }
+
+    // file size must not exceed 25mb
+    if (request.file.size > 25600000) {
+        fs.promises.unlink(request.file.path);
+        response.redirect('..');
+        return;
+    }
+
+    let data = {
         password: request.body.password,
         task: request.body.task,
         originalname: request.file.originalname,
@@ -28,24 +47,58 @@ app.post('/', upload.single('uploadedFile'), async (request, response) => {
         size: request.file.size
     }
 
-    console.log(data);
-    
-    try { await processFile(data); }
-    catch (err) { console.log(err) }
+    console.log("data:", data);
 
-    console.log("sending file to client");
+    try { 
+        
+        // encript or decrypt file
+        await processFile(data);
 
-    // return file immediately after process
-    try { response.download(data.path, (data.task + "ed_" + data.originalname), () => {
+        console.log("sending file to client");
+
+        // return file immediately after process and execute callback function to delete file from filesystem
+        response.download(data.path, (data.task + "ed_" + data.originalname), () => {
             console.log("starting delete");
-            fs.promises.unlink(data.path);  }); }
-    catch (err) { console.log(err); }
+            fs.promises.unlink(data.path);
+        });
+
+    } catch (err) {
+
+        console.log(err);
+        console.log("Couldn't process file correctly")
+
+    } finally {
+
+        const currentTime = new Date().getTime();
+
+        // search for files in 'uploadedFilesDir' storage and delete files older than 5 minutes
+        fs.readdir(uploadedFilesDir, (err, files) => {
+
+            //handling error
+            if (err) { return console.log('Unable to scan directory: ' + err); } 
+
+            files.forEach((file) => {
+
+                let filePath = uploadedFilesDir + file;
+            
+                // get creation time of file
+                const fileCreationTime = fs.statSync(filePath).birthtime.getTime();
+
+                // if file is more than 5 minutes old delete it (5 minutes = 300.000ms)
+                if (currentTime - fileCreationTime > 300000) {
+                    console.log(filePath + "   is more than 5 minutes old");
+                    fs.promises.unlink(filePath);
+                }
+            });
+
+        })
+    };
     
 });
 
 
 
-// async functions return a promise that can be awaited for when called
+// function must be async in order to have synchronous functions with keyword 'await'
 async function processFile(data) {
 
     console.log("processing file");
@@ -55,113 +108,90 @@ async function processFile(data) {
     var fileAsArray = Uint8Array.from(fs.readFileSync(data.path));
 
     // SHA-512 creates a key of 128 hex bytes
-    const key = Array.from(crypto.createHash('sha512').update(data.password).digest('hex'))
-        .map(element => element.charCodeAt(0));
+    const passwordHash = Array.from(crypto.createHash('sha512')
+                                            .update(data.password)
+                                            .digest('hex'))
+                                            .map(element => element.charCodeAt(0));
     
-    key.forEach(element => console.log(element, typeof(element)));
-    console.log(key.length);
+    fileAsArray = (data.task === "encrypt") ? 
+                    encriptFile(fileAsArray, passwordHash) : 
+                    decryptFile(fileAsArray, passwordHash);
 
-    if (data.task === "encrypt") {
-        fileAsArray = encriptFile(fileAsArray, key);
-    } else {
-        // before decrypting check if file has correct hash for password
-        fileAsArray = decryptFile(fileAsArray, key);
-    }
-
-    // second argument of writefile can receive TypedArray
+    // second argument of writefile must receive a TypedArray
     await fs.promises.writeFile(data.path, fileAsArray);
 
 };
 
 
+
 function encriptFile(file, key) {
 
-    /* var count = 0;
-    var varI = "";
-    var varJ = "";
-    var realFileI = "";
-    var realKeyJ = ""; */
-
-    /* console.log(file[0], file[1], file[2]); */
-
-    // 'i' will iterate through file, 'j' will iterate through hash
+    // first step
+    // 'i' iterates through file and 'j' iterates through hash in combination
     for (let i = 0, j = 0; i < file.length; i++, j++) {
         
+        // if 'j' is the last byte in hash, start over
         if (j > 127) { j = 0; }
 
-        /* let previousFileI = file[i]; */
-
+        // add file byte and hash byte
         file[i] = (file[i] + key[j] > 255) ? ((file[i] + key[j]) - 256) : (file[i] + key[j]);
-
-        /* if (count < 300) {
-            if (i < 10) {varI = "00" + i;}
-            else if (i < 100) {varI = "0" + i;}
-            else {varI = i;}
-            
-            if (j < 10) {varJ = "00" + j;}
-            else if (j < 100) {varJ = "0" + j;}
-            else {varJ = j;}
-            
-            if (previousFileI < 10) {realFileI = "00" + previousFileI;}
-            else if (previousFileI < 100) {realFileI = "0" + previousFileI;}
-            else {realFileI = previousFileI;}
-            
-            if (key[j] < 10) {realKeyJ = "00" + key[j];}
-            else if (key[j] < 100) {realKeyJ = "0" + key[j];}
-            else {realKeyJ = key[j];}
-            
-            console.log("file[" + varI + "]: " + realFileI, "  key[" + varJ + "]: " + realKeyJ + "   =   " + file[i]);
-            count++;
-        } */
     }
 
-    /* console.log(file[0], file[1], file[2]); */
+    // second step
+    // fragment file in blocks of 16 bytes and displace them by n columns base on row number
+    let i = 0;
+    while (i < file.length) {
+
+        // only complete 16 byte length blocks will suffer inner displacement
+        if (i + 16 > file.length) break;
+
+        // mix bites within temporary 16byte length block
+        let tempBlock = [ file[i]     , file[i + 5] , file[i + 10], file[i + 15],
+                          file[i + 4] , file[i + 9] , file[i + 14], file[i + 3] ,
+                          file[i + 8] , file[i + 13], file[i + 2] , file[i + 7] ,
+                          file[i + 12], file[i + 1] , file[i + 6] , file[i + 11]
+                        ];
+
+        // copy temporary block to file
+        tempBlock.forEach(e => {file[i] = e; i++});
+    }
 
     return file;
 }
+
+
 
 function decryptFile(file, key) {
 
-    /* var count = 0;
-    var varI = "";
-    var varJ = "";
-    var realFileI = "";
-    var realKeyJ = ""; */
+    // first step 
+    // fragment file in blocks of 16 bytes and replace them by n columns base on row number
+    let i = 0;
+    while (i < file.length) {
 
-    /* console.log(file[0], file[1], file[2]); */
+        // only complete 16 byte length blocks will suffer inner displacement
+        if (i + 16 > file.length) break;
 
-    // 'i' will iterate through file, 'j' will iterate through hash
-    for (let i = 0, j = 0; i < file.length; i++, j++) {
+        // rearange bytes within temporary 16byte length block
+        let tempBlock = [ file[i],      file[i + 13], file[i + 10], file[i + 7]  ,
+                          file[i + 4] , file[i + 1] , file[i + 14], file[i + 11] ,
+                          file[i + 8] , file[i + 5] , file[i + 2] , file[i + 15] ,
+                          file[i + 12], file[i + 9] , file[i + 6] , file[i + 3]
+                        ];
         
-        if (j > 127) { j = 0; }
-
-        /* let previousFileI = file[i]; */
-
-        file[i] = (file[i] - key[j] < 0) ? (256 - Math.abs(file[i] - key[j])) : (file[i] - key[j]);
-
-        /* if (count < 300) {
-            if (i < 10) {varI = "00" + i;}
-            else if (i < 100) {varI = "0" + i;}
-            else {varI = i;}
-            
-            if (j < 10) {varJ = "00" + j;}
-            else if (j < 100) {varJ = "0" + j;}
-            else {varJ = j;}
-            
-            if (previousFileI < 10) {realFileI = "00" + previousFileI;}
-            else if (previousFileI < 100) {realFileI = "0" + previousFileI;}
-            else {realFileI = previousFileI;}
-            
-            if (key[j] < 10) {realKeyJ = "00" + key[j];}
-            else if (key[j] < 100) {realKeyJ = "0" + key[j];}
-            else {realKeyJ = key[j];}
-            
-            console.log("file[" + varI + "]: " + realFileI, "  key[" + varJ + "]: " + realKeyJ + "   =   " + file[i]);
-            count++;
-        } */
+        // copy temporary block to file
+        tempBlock.forEach(e => {file[i] = e; i++});
     }
 
-    /* console.log(file[0], file[1], file[2]); */
+    // second step
+    // 'i' iterates through file and 'j' iterates through hash in combination
+    for (let i = 0, j = 0; i < file.length; i++, j++) {
+        
+        // if 'j' is the last byte in hash, start over
+        if (j > 127) { j = 0; }
+
+        // subtract hash byte from file byte
+        file[i] = (file[i] - key[j] < 0) ? (256 - Math.abs(file[i] - key[j])) : (file[i] - key[j]);
+    }
 
     return file;
 }
@@ -171,8 +201,12 @@ function decryptFile(file, key) {
 
 
 
-// check for errors is reading file (disbable required in html and no file will be sent) got to deal with it
+// check for errors in reading file (disbable required in html and no file will be sent) got to deal with it
 // check for errors in writting file
 // check for errors in deleting file
 // check for user empty password
 // sugest strong password
+
+// do lado do cliente -> quando faz submit, a password é apagada, sava script on submit
+
+

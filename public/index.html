@@ -7,7 +7,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://kit.fontawesome.com/bea47550f0.js" crossorigin="anonymous"></script>
+    
         <link rel="preconnect" href="https://fonts.gstatic.com"> 
         <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,700;0,800;0,900;1,800&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/style.css">
@@ -17,7 +19,7 @@
 
     <body>
 
-        <form class="container border" action="/" method="POST" enctype="multipart/form-data">
+        <form class="container border" id="tinoni" action="/" method="POST" enctype="multipart/form-data" onsubmit="clearPassword()">
 
             <h1>
                 select file to encr<i class="fas fa-key"></i>pt 
@@ -26,8 +28,8 @@
             <div class="form-group">
 
                 <label for="formFile" class="form-label"></label>
-                <input type="file" name="uploadedFile" class="form-control fileselector" id="formFile">
- 
+                <input type="file" name="uploadedFile" class="form-control fileselector" id="formFile" required onchange="validateSize(this)">
+
                 <ul id="output"></ul>
 
             </div>
@@ -35,7 +37,7 @@
             <div class="form-group password">
                 
                 <label for="password" class="col-sm-2 col-form-label">Password</i></label>
-                <input type="password" name="password" class="form-control" id="password" required placeholder="Password required">
+                <input type="password" name="password" class="form-control" id="password" placeholder="Password required" required>
 
             </div>
 
@@ -51,33 +53,14 @@
             
             <div class="form-group">
                 
-                <button type="submit" class="btn btn-warning process-button">Process</button>
+                <button type="submit" class="btn btn-warning process-button" id="process-button">Process</button>
 
             </div> 
 
         </form>
 
 
-        
-        <script>
-
-            const output = document.getElementById('output');
-
-            if (window.FileList && window.File) {
-                document.getElementById('fileInput').addEventListener('change', event => {
-                output.innerHTML = '';
-                for (const file of event.target.files) {
-                    const li = document.createElement('li');
-                    const name = file.name ? file.name : 'NOT SUPPORTED';
-                    const type = file.type ? file.type : 'NOT SUPPORTED';
-                    const size = file.size ? file.size : 'NOT SUPPORTED';
-                    li.textContent = `name: ${name}, type: ${type}, size: ${size}`;
-                    output.appendChild(li);
-                }
-                }); 
-            }
-
-        </script>
+        <script src="/scripts/script.js"></script>
 
     </body>
 
