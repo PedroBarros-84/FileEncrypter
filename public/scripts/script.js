@@ -10,7 +10,7 @@ function validateSize(file) {
     }
 }
 
-function clearPassword() {
+function validateAndClearPassword() {
 
     if (document.getElementById('password').value.length === 0) {
         alert('Must provide password');
