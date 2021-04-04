@@ -9,7 +9,6 @@ const multer  = require('multer');
 const multerDest = multer({ dest: uploadedFilesDir});
 const fs = require('fs');
 const crypto = require('crypto');
-const alert = require('alert');
 
 // bound socket to port
 app.listen(PORT);
@@ -26,8 +25,11 @@ app.post('/', multerDest.single('uploadedFile'), async (request, response) => {
 
     // when user doesn't provide password or file
     if (!request.body.password || !request.file) {
-        alert("You have to provide both file and password.");
         response.redirect('..');
+        if (request.file !== undefined) {
+            console.log("file not undefined");
+            fs.promises.unlink(request.file.path);
+        }
         return;
     }
 

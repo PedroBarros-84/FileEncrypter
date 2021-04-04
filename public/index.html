@@ -19,7 +19,7 @@
 
     <body>
 
-        <form class="container border" id="tinoni" action="/" method="POST" enctype="multipart/form-data" onsubmit="clearPassword()">
+        <form class="container border" action="/" method="POST" enctype="multipart/form-data" onsubmit="return validateAndClearPassword()">
 
             <h1>
                 select file to encr<i class="fas fa-key"></i>pt 
@@ -28,7 +28,7 @@
             <div class="form-group">
 
                 <label for="formFile" class="form-label"></label>
-                <input type="file" name="uploadedFile" class="form-control fileselector" id="formFile" required onchange="validateSize(this)">
+                <input type="file" name="uploadedFile" class="form-control fileselector" id="formFile" onchange="validateSize(this)" required>
 
                 <ul id="output"></ul>
 

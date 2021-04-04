@@ -12,7 +12,13 @@ function validateSize(file) {
 
 function clearPassword() {
 
-    document.getElementById('password').value = '';
+    if (document.getElementById('password').value.length === 0) {
+        alert('Must provide password');
+        return false;
+    }
+
+    setTimeout(() => document.getElementById('password').value = '', 1000);
+    return true;
 
 }
 
