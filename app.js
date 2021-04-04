@@ -20,14 +20,10 @@ app.use(express.static('public'));
 
 app.post('/', multerDest.single('uploadedFile'), async (request, response) => {
 
-    console.log("request.body:", request.body);
-    console.log("request.file:", request.file);
-
     // when user doesn't provide password or file
     if (!request.body.password || !request.file) {
         response.redirect('..');
         if (request.file !== undefined) {
-            console.log("file not undefined");
             fs.promises.unlink(request.file.path);
         }
         return;
@@ -49,18 +45,13 @@ app.post('/', multerDest.single('uploadedFile'), async (request, response) => {
         size: request.file.size
     }
 
-    console.log("data:", data);
-
     try { 
         
         // encript or decrypt file
         await processFile(data);
 
-        console.log("sending file to client");
-
         // return file immediately after process and execute callback function to delete file from filesystem
         response.download(data.path, (data.task + "ed_" + data.originalname), () => {
-            console.log("starting delete");
             fs.promises.unlink(data.path);
         });
 
@@ -88,7 +79,6 @@ app.post('/', multerDest.single('uploadedFile'), async (request, response) => {
 
                 // if file is more than 5 minutes old delete it (5 minutes = 300.000ms)
                 if (currentTime - fileCreationTime > 300000) {
-                    console.log(filePath + "   is more than 5 minutes old");
                     fs.promises.unlink(filePath);
                 }
             });
@@ -102,8 +92,6 @@ app.post('/', multerDest.single('uploadedFile'), async (request, response) => {
 
 // function must be async in order to have synchronous functions with keyword 'await'
 async function processFile(data) {
-
-    console.log("processing file");
     
     // fs.readFileSync runs synchronistically and returns a buffer
     // Uint8Array defines array to be of type primitive unsigned 8bit
@@ -197,18 +185,3 @@ function decryptFile(file, key) {
 
     return file;
 }
-
-
-
-
-
-
-// check for errors in reading file (disbable required in html and no file will be sent) got to deal with it
-// check for errors in writting file
-// check for errors in deleting file
-// check for user empty password
-// sugest strong password
-
-// do lado do cliente -> quando faz submit, a password é apagada, sava script on submit
-
-
