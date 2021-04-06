@@ -1,5 +1,7 @@
 # File Encrypter 
 
+### App deployed at: [file-encrypter.herokuapp.com](https://file-encrypter.herokuapp.com)
+
 ### Background
 
 Inspired by famous encryption algorithms, I have design my own.  
@@ -17,5 +19,5 @@ Encryption/decryption takes a two step process:
 * Substitution based on hash function
 * Permutation within defined byte chunks
 
-After process, file is imediately sent to client for download with same file name plus "encrypted_" or "decrypted_" prefix.  
+After process, file is immediately sent to client for download with same file name plus "encrypted_" or "decrypted_" prefix.  
 Password is not stored in file. Wrong password will still let the user upload the encrypted file to be processed and returned for download, but without the correct password, returned file will always be corrupted.
