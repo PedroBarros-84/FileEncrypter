@@ -2,7 +2,7 @@
 
 ### App deployed at: [file-encrypter.herokuapp.com](https://file-encrypter.herokuapp.com)
 
-### Backgroundcd 
+### Background
 
 Inspired by famous encryption algorithms, I have design my own.  
 File processing goes from a basic adding operation between bytes, inspired by the Caesar Cipher substitution, to a more elusive AES approach where permutation take place.  
