@@ -22,44 +22,47 @@
 
     <body>
 
-        <form class="container border" action="/" method="POST" enctype="multipart/form-data" onsubmit="return validateAndClearPassword()">
+        <div class="form-container">
 
-            <h1>
-                select file to encr<i class="fas fa-key"></i>pt 
-            </h1>
-
-            <p class="description">Any file type up to 25mb. Wrong password will still let the user upload the encrypted file to be processed and returned for download, but without the correct password, returned file will always be corrupted. Password is not stored in file.</p>
-
-            <div class="form-group">
-
-                <input type="file" name="uploadedFile" class="form-control fileselector" id="formFile" onchange="validateSize(this)" required>
+            <form class="file-form" action="/" method="POST" enctype="multipart/form-data" onsubmit="return validateAndClearPassword()">
                 
-                <div class="password-container">
+                <h1>
+                    select file to encr<i class="fas fa-key"></i>pt 
+                </h1>
+                
+                <p class="description">Any file type up to 25mb. Wrong password will still let the user upload the encrypted file to be processed and returned for download, but without the correct password, returned file will always be corrupted. Password is not stored in file.</p>
+                
+                <div class="form-group">
                     
-                    <label for="password" class="password-label">Password</i></label>
-                    <input name="password" type="password" class="password-input" id="password" placeholder="Password required" required>
+                    <input type="file" name="uploadedFile" class="form-control fileselector" id="formFile" onchange="validateSize(this)" required>
+                    
+                    <div class="password-container">
+                        
+                        <label for="password" class="password-label">Password</i></label>
+                        <input name="password" type="password" class="password-input" id="password" placeholder="Password required" required>
+                        
+                    </div>
+                    
+                    <div class="radio-group">
+                        
+                        <input type="radio" class="btn-check" name="task" id="encrypt" value="encrypt" autocomplete="off" checked>
+                        <label class="btn btn-outline-secondary radio-button" for="encrypt">Encrypt</label>
+                        
+                        <input type="radio" class="btn-check" name="task" id="decrypt" value="decrypt" autocomplete="off">
+                        <label class="btn btn-outline-secondary radio-button" for="decrypt">Decrypt</label>
+                        
+                    </div>
+                    
+                    <button type="submit" class="btn btn-warning process-button" id="process-button">Process</button>
                     
                 </div>
                 
-                <div class="radio-group">
-                    
-                    <input type="radio" class="btn-check" name="task" id="encrypt" value="encrypt" autocomplete="off" checked>
-                    <label class="btn btn-outline-secondary radio-button" for="encrypt">Encrypt</label>
-                    
-                    <input type="radio" class="btn-check" name="task" id="decrypt" value="decrypt" autocomplete="off">
-                    <label class="btn btn-outline-secondary radio-button" for="decrypt">Decrypt</label>
-                    
-                </div>
- 
-                <button type="submit" class="btn btn-warning process-button" id="process-button">Process</button>
-                    
-            </div>
-
-        </form>
-
+            </form>
+            
+        </div>
 
         <script src="/scripts/script.js"></script>
-
-    </body>
+            
+        </body>
 
 </html>

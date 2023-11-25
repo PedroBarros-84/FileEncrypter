@@ -1,5 +1,5 @@
 * {
-	// outline: 1px solid magenta;
+	//outline: 1px solid magenta;
 }
 
 body {
@@ -9,6 +9,7 @@ body {
 	font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
 	display: flex;
 	align-items: center;
+	justify-content: center;
 }
 
 h1 {
@@ -20,25 +21,28 @@ h1 {
 	margin: 0;
 }
 
-.container {
+.form-container {
+	max-width: 750px;
+	margin: 40px;
+}
+
+.file-form {
 	color: #555555;
 	display: flex;
 	flex-direction: column;
 	row-gap: 25px;
-	max-width: 750px;
-	padding: 40px 30px;
-	width: 80%;
+	padding: 50px;
 	border-radius: 50px;
 	background: linear-gradient(145deg, #fbfbfb, #d4d4d4);
 	box-shadow: 50px 50px 100px #a5a5a5, -50px -50px 100px #ffffff;
 }
 
-.container .description {
+.file-form .description {
 	margin: 0;
 	text-align: center;
 }
 
-.container .fileselector {
+.file-form .fileselector {
 	box-shadow: 3px 3px 10px #a5a5a5;
 	outline: 0;
 }
@@ -50,7 +54,7 @@ h1 {
 	text-align: center;
 }
 
-.container .password-container {
+.file-form .password-container {
 	display: flex;
 	border-radius: 5px;
 	box-shadow: 3px 3px 10px #a5a5a5;
@@ -60,7 +64,7 @@ h1 {
 	color: #212529;
 }
 
-.container .form-group .form-control::file-selector-button {
+.file-form .form-group .form-control::file-selector-button {
 	width: 110px;
 }
 
@@ -85,7 +89,7 @@ h1 {
 	width: 100%;
 }
 
-.container .radio-group {
+.file-form .radio-group {
 	display: flex;
 	justify-content: space-between;
 	row-gap: 10px;
@@ -107,13 +111,30 @@ h1 {
 	scale: 99%;
 }
 
-.container .process-button {
+.file-form .process-button {
 	width: 100%;
 	border: 1px solid rgb(198, 152, 1);
 	box-shadow: 3px 3px 10px #a5a5a5;
 	color: #444444;
 }
 
-.container .process-button:active {
+.file-form .process-button:active {
 	scale: 99%;
+}
+
+/* Cellphones */
+@media only screen and (max-width: 550px) {
+	.form-container {
+		margin: 20px;
+	}
+
+	.file-form {
+		padding: 50px 20px;
+	}
+
+	.file-form .description {
+		margin: 0;
+		text-align: center;
+		font-size: 14px;
+	}
 }
